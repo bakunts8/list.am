@@ -3,14 +3,17 @@ package ListPages;
 import Helpers.Language;
 import Helpers.Waits;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.LoadableComponent;
 
 import static java.time.Duration.ofSeconds;
 
-public class BasePage {
+public class BasePage extends LoadableComponent<BasePage> {
 
     private final String BaseURL = "https://www.list.am";
     private final String endpoint = "";
@@ -38,11 +41,18 @@ public class BasePage {
         PageFactory.initElements(new AppiumFieldDecorator(driver, ofSeconds(8)), this);
     }
 
-
-    public <T extends BasePage> T open() {
+    @Override
+    protected void load() {
         driver.get(BaseURL + getEndpoint());
-        getPageLoadCheckElement().isDisplayed();
-        return (T) this;
+    }
+
+    @Override
+    protected void isLoaded() throws Error {
+        try {
+            getPageLoadCheckElement().isDisplayed();
+        } catch (StaleElementReferenceException | NoSuchElementException e) {
+            throw new Error("The page is not loaded");
+        }
     }
 
     public String getEndpoint() {
@@ -56,6 +66,8 @@ public class BasePage {
     public WebDriver getDriver() {
         return driver;
     }
+
+
 
     public Waits getWait() {
         wait = new Waits(driver);
@@ -74,9 +86,8 @@ public class BasePage {
         languageOptionButton.click();
     }
 
-    public HomePage switchToHomePage() {
+    public void switchToHomePage() {
         toHomePageButton.click();
-        return new HomePage(driver);
     }
 
     public void search(String content) {
