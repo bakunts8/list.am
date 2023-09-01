@@ -5,14 +5,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-
 import java.util.List;
 
-public class Categories extends BasePage {
+public class Category extends BasePage {
 
-    @FindBy(xpath = "(//div[@id = 'contentr']//a//div[contains(@class, 'at')])[10]")
-    private WebElement pageLoadCheckElement;
 
     @FindBy(xpath = "//div[@id = 'menu']//span[contains(text(), 'All')]")
     private WebElement allCategoriesButton;
@@ -24,10 +20,10 @@ public class Categories extends BasePage {
     private WebElement locationButton;
 
     @FindBy(xpath = "//div[@id = 'contentr']//a/div[contains(@class, 'p')]")
-    private List<WebElement> ItemPrice;
+    private List<WebElement> itemPrice;
 
     @FindBy(xpath = "//div[@id = 'contentr']//a/div[contains(@class, 'at')]")
-    private List<WebElement> itemGeneralInfo;
+    private List<WebElement> items;
 
     @FindBy(xpath = "//div[@id ='contentr']//div[@class = 'clabel']")
     private List<WebElement> itemAgencyLabel;
@@ -38,26 +34,12 @@ public class Categories extends BasePage {
     private String endpoint = "/category/";
     private String newEndpoint = "";
 
-    public Categories(WebDriver driver) {
+    public Category(WebDriver driver) {
         super(driver);
-        PageFactory.initElements(driver, this);
-    }
-
-    @Override
-    public String getEndpoint() {
-        return endpoint;
-    }
-
-    public void setNewEndpoint(String newEndpoint) {
-        this.newEndpoint = newEndpoint;
-    }
-
-    public WebElement getPageLoadCheckElement() {
-        return pageLoadCheckElement;
     }
 
     public void switchToPage(String... option) {
-        new Actions(driver).moveToElement(allCategoriesButton).build().perform();
+        new Actions(driver).moveToElement(getAllCategoriesButton()).build().perform();
 
         String allCategoriesOptionButtonSelector = "//div[@id = 'menu']//div[@data-c]//span/a[contains(text(), '%s')]";
         WebElement allCategoriesOptionButton;
@@ -87,71 +69,139 @@ public class Categories extends BasePage {
     }
 
     public void selectCurrency(String currency) {
-        currencyButton.click();
+        getCurrencyButton().click();
         String currencyOptionSelector = "//div[contains(@class, 'l top')]/div[contains(text(), '%s')]";
         WebElement currencyOptionButton = getWait().waitingClickable(currencyOptionSelector.formatted(currency), 3);
-        clickAndWait(currencyOptionButton);
-        newEndpoint = getDriver().getCurrentUrl().substring(getBaseURL().length() + getEndpoint().length());
-        setNewEndpoint(newEndpoint);
-        this.get();
+        clickAndWaitToPageLoad(currencyOptionButton);
+        setNewEndpoint();
     }
 
-    public void selectPrice(String from, String to) {
+    public void selectPrice(Integer from, Integer to) {
         String priceSelector = "//input[contains(@id, 'idprice%s')]";
         WebElement priceFrom = getWait().waitingClickable(priceSelector.formatted("1"), 2);
-        priceFrom.sendKeys(from);
+        priceFrom.sendKeys(from.toString());
         WebElement priceTo = getWait().waitingClickable(priceSelector.formatted("2"), 2);
-        priceTo.sendKeys(to);
+        priceTo.sendKeys(to.toString());
         WebElement priseSubmit = getWait().waitingClickable("//img[@id = 'gobtn']", 5);
-        clickAndWait(priseSubmit);
-        newEndpoint = getDriver().getCurrentUrl().substring(getBaseURL().length() + getEndpoint().length());
-        setNewEndpoint(newEndpoint);
-        this.get();
+        clickAndWaitToPageLoad(priseSubmit);
+        setNewEndpoint();
     }
 
     public void selectLocation(String place) {
-        locationButton.click();
+        getLocationButton().click();
         String locationOptionSelector = "//div[contains(text(), 'Location')]//..//following-sibling::div[contains(@data-name, '%s')]";
         WebElement locationOption = getWait().waitingClickable(locationOptionSelector.formatted(place), 2);
-        clickAndWait(locationOption);
-        newEndpoint = getDriver().getCurrentUrl().substring(getBaseURL().length() + getEndpoint().length());
-        setNewEndpoint(newEndpoint);
-        this.get();
+        clickAndWaitToPageLoad(locationOption);
+        setNewEndpoint();
     }
 
     public void filterThePage(String... options) {
         for (String option : options) {
             String sectionFilterSelector = "//div[@class = 'section']//label[contains(@for, 'id') and contains(text(), '%s')]";
             WebElement optionButton = getWait().waitingClickable(sectionFilterSelector.formatted(option), 3);
-            clickAndWait(optionButton);
+            clickAndWaitToPageLoad(optionButton);
         }
+        setNewEndpoint();
+    }
+
+    private void setNewEndpoint() {
         newEndpoint = getDriver().getCurrentUrl().substring(getBaseURL().length() + getEndpoint().length());
-        setNewEndpoint(newEndpoint);
-        this.get();
     }
 
-    public List<WebElement> getItemPrice() {
-        return ItemPrice;
+    public boolean checkPriceRange(int from, int to) {
+        boolean isInRange = true;
+        int price;
+
+        for (WebElement element : getItemPrice()) {
+            price = Integer.parseInt(element.getText().replaceAll("\\D", ""));
+            if (price < from || price > to) {
+                isInRange = false;
+            }
+        }
+        return isInRange;
     }
 
-    public List<WebElement> getItemGeneralInfo() {
-        return itemGeneralInfo;
+    public boolean checkCurrency(String currency) {
+        String type = switch (currency) {
+            case "AMD" -> "֏";
+            case "USD" -> "$";
+            default -> "";
+        };
+        boolean isRightCurrency = true;
+        for (WebElement element : getItemPrice()) {
+            if (!element.getText().contains(type)) {
+                isRightCurrency = false;
+            }
+        }
+        return isRightCurrency;
     }
 
-    public List<WebElement> getItemAgencyLabel() {
+    public boolean checkLocation(String location) {
+        boolean isInLocation = true;
+
+        for (WebElement element : getItems()) {
+            if (!element.getText().contains(location)) {
+                isInLocation = false;
+            }
+        }
+        return isInLocation;
+    }
+
+    public boolean checkAgencyFilter() {
+
+        boolean isOfferedFromAgency = true;
+
+        for (WebElement element : getItemAgencyLabel()) {
+            if (!element.getText().equals("Agency")) {
+                isOfferedFromAgency = false;
+            }
+        }
+        return isOfferedFromAgency;
+    }
+
+    @Override
+    public String getEndpoint() {
+        return endpoint;
+    }
+
+    protected List<WebElement> getItemPrice() {
+        return itemPrice;
+    }
+
+    protected List<WebElement> getItems() {
+        return items;
+    }
+
+    protected List<WebElement> getItemAgencyLabel() {
         return itemAgencyLabel;
     }
 
-    public List<WebElement> getItemDescription() {
+    protected List<WebElement> getItemDescription() {
         return itemDescription;
     }
 
-    private void clickAndWait(WebElement element) {
+    public boolean isEmptyItems() {
+        return items.isEmpty();
+    }
+
+    public WebElement getAllCategoriesButton() {
+        return allCategoriesButton;
+    }
+
+    public WebElement getCurrencyButton() {
+        return currencyButton;
+    }
+
+    public WebElement getLocationButton() {
+        return locationButton;
+    }
+
+    private void clickAndWaitToPageLoad(WebElement element) {
         try {
             element.click();
         } catch (ElementClickInterceptedException e) {
             element.submit();
         }
-        getWait().waitingVisibility("(//div[@id = 'contentr']//a//div[contains(@class, 'at')])[10]", 4);
+        getWait().waitingClickable("//div[@id='star']/preceding::a[1]", 4);
     }
 }

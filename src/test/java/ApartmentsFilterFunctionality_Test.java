@@ -1,16 +1,19 @@
 import Helpers.Language;
 import ListPages.Apartments;
-import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 public class ApartmentsFilterFunctionality_Test extends BaseTest {
 
-    @Test
+    @Test()
     public void filterFunctionalityTest() {
         Apartments page = (Apartments) new Apartments(getDriver()).get();
         page.chooseLanguageInTopRight(Language.ENGLISH);
         page.filterThePage("Agency");
 
-        Assert.assertTrue(page.checkFilteringApartments(), ": Apartment(s) didn't offered by agency");
+        SoftAssert softAssert = new SoftAssert();
+        softAssert.assertTrue(!page.isEmptyItems(), "The page has no items");
+        softAssert.assertTrue(page.checkAgencyFilter(), ": Apartment didn't offered by agency");
+        softAssert.assertAll();
     }
 }

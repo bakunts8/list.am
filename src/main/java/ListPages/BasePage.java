@@ -2,16 +2,12 @@ package ListPages;
 
 import Helpers.Language;
 import Helpers.Waits;
-import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.LoadableComponent;
-
-import static java.time.Duration.ofSeconds;
 
 public class BasePage extends LoadableComponent<BasePage> {
 
@@ -33,12 +29,12 @@ public class BasePage extends LoadableComponent<BasePage> {
     @FindBy(xpath = "//div[@id = 'ph']//a[@id = 'l']")
     private WebElement toHomePageButton;
 
-    @FindBy(xpath = "//div[@class = 'r']/a[contains(text(), 'Terms of Service')]")
+    @FindBy(xpath = "//div[@id='star']/preceding::a[1]")
     private WebElement pageLoadCheckElement;
 
     public BasePage(WebDriver driver) {
         this.driver = driver;
-        PageFactory.initElements(new AppiumFieldDecorator(driver, ofSeconds(8)), this);
+        PageFactory.initElements(driver, this);
     }
 
     @Override
@@ -50,7 +46,7 @@ public class BasePage extends LoadableComponent<BasePage> {
     protected void isLoaded() throws Error {
         try {
             getPageLoadCheckElement().isDisplayed();
-        } catch (StaleElementReferenceException | NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             throw new Error("The page is not loaded");
         }
     }

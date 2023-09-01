@@ -1,25 +1,34 @@
 import Helpers.Language;
-import ListPages.Categories;
-import ListPages.HomePage;
 import ListPages.Notebooks;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
 public class NotebooksFilterFunctionality_Test extends BaseTest {
 
-    @Test
-    public void checkFilterFunctionality() {
-        Notebooks notebooks = (Notebooks) new Notebooks(getDriver()).get();
-        notebooks.chooseLanguageInTopRight(Language.ENGLISH);
-        notebooks.selectCurrency("AMD");
-        notebooks.selectPrice("200000", "500000");
-        notebooks.selectLocation("Kentron");
+    @Test(dataProvider = "filterData")
+    public void checkFilterFunctionality(int priceFrom, int priceTo, String currency, String location) {
+        Notebooks notebook = (Notebooks) new Notebooks(getDriver()).get();
+        notebook.chooseLanguageInTopRight(Language.ENGLISH);
+        notebook.selectCurrency(currency);
+        notebook.selectPrice(priceFrom, priceTo);
+        notebook.selectLocation(location);
 
         SoftAssert softAssert = new SoftAssert();
-        softAssert.assertTrue(notebooks.checkCurrency());
-        softAssert.assertTrue(notebooks.checkPriceRange());
-        softAssert.assertTrue(notebooks.checkLocation());
+        softAssert.assertTrue(!notebook.isEmptyItems(), "The page has no items");
+        softAssert.assertTrue(notebook.checkCurrency(currency), "currency does not match");
+        softAssert.assertTrue(notebook.checkPriceRange(priceFrom, priceTo), "the price isn't within the specified range");
+        softAssert.assertTrue(notebook.checkLocation(location), "the location is wrong");
 
         softAssert.assertAll();
+    }
+
+    @DataProvider
+    public Object[][] filterData() {
+        return new Object[][] {
+                {200000, 500000, "AMD", "Kentron"},
+                {500000, 700000, "AMD", "Gyumri"},
+                {500000, 700000, "AMD", "Maralik"}
+        };
     }
 }

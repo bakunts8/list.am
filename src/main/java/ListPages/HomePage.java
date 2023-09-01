@@ -7,15 +7,8 @@ import org.openqa.selenium.support.FindBy;
 
 public class HomePage extends BasePage {
 
-    @FindBy(xpath = "//div[@class = 'bar']/a[contains(@href, '')]")
-    private WebElement pageLoadCheckElement;
-
     public HomePage(WebDriver driver) {
         super(driver);
-    }
-
-    public WebElement getPageLoadCheckElement() {
-        return pageLoadCheckElement;
     }
 
     public void chooseLanguage(Language option) {
