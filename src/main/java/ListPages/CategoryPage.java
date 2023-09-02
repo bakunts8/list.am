@@ -1,13 +1,17 @@
 package ListPages;
 
+import Helpers.Item;
 import org.openqa.selenium.ElementClickInterceptedException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class Category extends BasePage {
+public class CategoryPage extends BasePage {
 
 
     @FindBy(xpath = "//div[@id = 'menu']//span[contains(text(), 'All')]")
@@ -19,22 +23,15 @@ public class Category extends BasePage {
     @FindBy(xpath = "//div[contains(text(), 'Location')]//..//following-sibling::div[contains(@class, 'me')]")
     private WebElement locationButton;
 
-    @FindBy(xpath = "//div[@id = 'contentr']//a/div[contains(@class, 'p')]")
-    private List<WebElement> itemPrice;
+    @FindBy(xpath = "//div[@id = 'contentr']//a")
+    private List<WebElement> elements;
 
-    @FindBy(xpath = "//div[@id = 'contentr']//a/div[contains(@class, 'at')]")
-    private List<WebElement> items;
-
-    @FindBy(xpath = "//div[@id ='contentr']//div[@class = 'clabel']")
-    private List<WebElement> itemAgencyLabel;
-
-    @FindBy(xpath = "//div[@id ='contentr']//a//div[@class = 'l' or @class = 'l l3']")
-    private List<WebElement> itemDescription;
-
+    private List<Item> items;
     private String endpoint = "/category/";
     private String newEndpoint = "";
 
-    public Category(WebDriver driver) {
+
+    public CategoryPage(WebDriver driver) {
         super(driver);
     }
 
@@ -104,16 +101,12 @@ public class Category extends BasePage {
         setNewEndpoint();
     }
 
-    private void setNewEndpoint() {
-        newEndpoint = getDriver().getCurrentUrl().substring(getBaseURL().length() + getEndpoint().length());
-    }
-
     public boolean checkPriceRange(int from, int to) {
         boolean isInRange = true;
         int price;
 
-        for (WebElement element : getItemPrice()) {
-            price = Integer.parseInt(element.getText().replaceAll("\\D", ""));
+        for (Item item : getItems()) {
+            price = Integer.parseInt(item.getItemPrice().getText().replaceAll("\\D", ""));
             if (price < from || price > to) {
                 isInRange = false;
             }
@@ -128,8 +121,8 @@ public class Category extends BasePage {
             default -> "";
         };
         boolean isRightCurrency = true;
-        for (WebElement element : getItemPrice()) {
-            if (!element.getText().contains(type)) {
+        for (Item item : getItems()) {
+            if (!item.getItemPrice().getText().contains(type)) {
                 isRightCurrency = false;
             }
         }
@@ -139,8 +132,8 @@ public class Category extends BasePage {
     public boolean checkLocation(String location) {
         boolean isInLocation = true;
 
-        for (WebElement element : getItems()) {
-            if (!element.getText().contains(location)) {
+        for (Item item : getItems()) {
+            if (!item.getItemLocation().getText().contains(location)) {
                 isInLocation = false;
             }
         }
@@ -148,40 +141,51 @@ public class Category extends BasePage {
     }
 
     public boolean checkAgencyFilter() {
-
         boolean isOfferedFromAgency = true;
 
-        for (WebElement element : getItemAgencyLabel()) {
-            if (!element.getText().equals("Agency")) {
+        for (Item item : getItems()) {
+            if (!item.getItemAgencyLabel().getText().equals("Agency")) {
                 isOfferedFromAgency = false;
             }
         }
         return isOfferedFromAgency;
     }
 
-    @Override
-    public String getEndpoint() {
-        return endpoint;
+    public boolean isClickableLatestItem() {
+        boolean isClickable = true;
+
+        try {
+            getWait().waitingClickable(getElements().get(getElements().size() - 1), 4);
+        } catch (TimeoutException e) {
+            isClickable = false;
+        }
+        return isClickable;
     }
 
-    protected List<WebElement> getItemPrice() {
-        return itemPrice;
-    }
-
-    protected List<WebElement> getItems() {
+    public List<Item> getItems() {
+        items = new ArrayList<>();
+        try {
+            for (WebElement el : getElements()) {
+                items.add(new Item(getDriver()));
+            }
+        } catch (TimeoutException e) {
+            throw new NullPointerException("The page has no items");
+        }
         return items;
     }
 
-    protected List<WebElement> getItemAgencyLabel() {
-        return itemAgencyLabel;
+    private void clickAndWaitToPageLoad(WebElement element) {
+        try {
+            element.click();
+        } catch (ElementClickInterceptedException e) {
+            element.submit();
+        }
+        getWait().waitingClickable("//div[@id='star']/preceding::a[1]", 4);
     }
 
-    protected List<WebElement> getItemDescription() {
-        return itemDescription;
-    }
-
-    public boolean isEmptyItems() {
-        return items.isEmpty();
+    @Override
+    public String getEndpoint() {
+        return endpoint;
     }
 
     public WebElement getAllCategoriesButton() {
@@ -196,12 +200,11 @@ public class Category extends BasePage {
         return locationButton;
     }
 
-    private void clickAndWaitToPageLoad(WebElement element) {
-        try {
-            element.click();
-        } catch (ElementClickInterceptedException e) {
-            element.submit();
-        }
-        getWait().waitingClickable("//div[@id='star']/preceding::a[1]", 4);
+    public List<WebElement> getElements() {
+        return elements;
+    }
+
+    private void setNewEndpoint() {
+        newEndpoint = getDriver().getCurrentUrl().substring(getBaseURL().length() + getEndpoint().length());
     }
 }

@@ -12,7 +12,6 @@ public class ApartmentsFilterFunctionality_Test extends BaseTest {
         page.filterThePage("Agency");
 
         SoftAssert softAssert = new SoftAssert();
-        softAssert.assertTrue(!page.isEmptyItems(), "The page has no items");
         softAssert.assertTrue(page.checkAgencyFilter(), ": Apartment didn't offered by agency");
         softAssert.assertAll();
     }

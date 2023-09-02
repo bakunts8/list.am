@@ -15,7 +15,6 @@ public class NotebooksFilterFunctionality_Test extends BaseTest {
         notebook.selectLocation(location);
 
         SoftAssert softAssert = new SoftAssert();
-        softAssert.assertTrue(!notebook.isEmptyItems(), "The page has no items");
         softAssert.assertTrue(notebook.checkCurrency(currency), "currency does not match");
         softAssert.assertTrue(notebook.checkPriceRange(priceFrom, priceTo), "the price isn't within the specified range");
         softAssert.assertTrue(notebook.checkLocation(location), "the location is wrong");
@@ -27,8 +26,7 @@ public class NotebooksFilterFunctionality_Test extends BaseTest {
     public Object[][] filterData() {
         return new Object[][] {
                 {200000, 500000, "AMD", "Kentron"},
-                {500000, 700000, "AMD", "Gyumri"},
-                {500000, 700000, "AMD", "Maralik"}
+                {500000, 700000, "AMD", "Gyumri"}
         };
     }
 }

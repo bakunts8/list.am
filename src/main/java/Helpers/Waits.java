@@ -33,6 +33,10 @@ public class Waits {
         return webDriverWait(second).until(ExpectedConditions.elementToBeClickable(by));
     }
 
+    public WebElement waitingClickable(Item item, int second) {
+        return webDriverWait(second).until(ExpectedConditions.elementToBeClickable((WebElement) item));
+    }
+
     public WebElement waitingClickable(String selector, int second) {
         return webDriverWait(second).until(ExpectedConditions.elementToBeClickable(By.xpath(selector)));
     }

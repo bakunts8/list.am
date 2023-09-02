@@ -11,4 +11,9 @@
             <class name="NotebooksFilterFunctionality_Test"/>
         </classes>
     </test>
+    <test name="Check last item clickable functionality">
+        <classes>
+            <class name="LastItemFunctionality_Test"/>
+        </classes>
+    </test>
 </suite>

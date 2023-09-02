@@ -2,7 +2,7 @@ package ListPages;
 
 import org.openqa.selenium.WebDriver;
 
-public class Notebooks extends Category {
+public class Notebooks extends CategoryPage {
 
     private String endpoint = "116";
     private String newEndpoint = "";
