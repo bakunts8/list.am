@@ -9,6 +9,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class CategoryPage extends BasePage {
@@ -23,7 +24,7 @@ public class CategoryPage extends BasePage {
     @FindBy(xpath = "//div[contains(text(), 'Location')]//..//following-sibling::div[contains(@class, 'me')]")
     private WebElement locationButton;
 
-    @FindBy(xpath = "//div[@id = 'contentr']//a")
+    @FindBy(xpath = "//div[@id = 'contentr']//a/img")
     private List<WebElement> elements;
 
     private List<Item> items;
@@ -103,11 +104,9 @@ public class CategoryPage extends BasePage {
 
     public boolean checkPriceRange(int from, int to) {
         boolean isInRange = true;
-        int price;
 
         for (Item item : getItems()) {
-            price = Integer.parseInt(item.getItemPrice().getText().replaceAll("\\D", ""));
-            if (price < from || price > to) {
+            if (from > Integer.parseInt(item.getPrice().getText().replaceAll("\\D", "")) || to < Integer.parseInt(item.getPrice().getText().replaceAll("\\D", ""))) {
                 isInRange = false;
             }
         }
@@ -121,8 +120,9 @@ public class CategoryPage extends BasePage {
             default -> "";
         };
         boolean isRightCurrency = true;
+
         for (Item item : getItems()) {
-            if (!item.getItemPrice().getText().contains(type)) {
+            if (!item.getPrice().getText().contains(type)) {
                 isRightCurrency = false;
             }
         }
@@ -133,7 +133,7 @@ public class CategoryPage extends BasePage {
         boolean isInLocation = true;
 
         for (Item item : getItems()) {
-            if (!item.getItemLocation().getText().contains(location)) {
+            if (!item.getLocation().getText().contains(location)) {
                 isInLocation = false;
             }
         }
@@ -144,7 +144,7 @@ public class CategoryPage extends BasePage {
         boolean isOfferedFromAgency = true;
 
         for (Item item : getItems()) {
-            if (!item.getItemAgencyLabel().getText().equals("Agency")) {
+            if (!item.getAgencyLabel().getText().contains("Agency")) {
                 isOfferedFromAgency = false;
             }
         }
@@ -163,13 +163,9 @@ public class CategoryPage extends BasePage {
     }
 
     public List<Item> getItems() {
-        items = new ArrayList<>();
-        try {
-            for (WebElement el : getElements()) {
-                items.add(new Item(getDriver()));
-            }
-        } catch (TimeoutException e) {
-            throw new NullPointerException("The page has no items");
+        items = new LinkedList<>();
+        for (WebElement element : elements) {
+            items.add(new Item(getDriver()));
         }
         return items;
     }
