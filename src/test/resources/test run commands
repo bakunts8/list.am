@@ -1,0 +1,2 @@
+mvn -Dtest=className test                  ..............run test class
+mvn -Dtest=className#methodName test       ..............run test method

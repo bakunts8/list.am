@@ -5,7 +5,7 @@ import org.testng.asserts.SoftAssert;
 
 public class ApartmentsFilterFunctionality_Test extends BaseTest {
 
-    @Test()
+    @Test(groups = {"filtering"})
     public void filterFunctionalityTest() {
         Apartments page = (Apartments) new Apartments(getDriver()).get();
         page.chooseLanguageInTopRight(Language.ENGLISH);
