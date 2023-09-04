@@ -6,7 +6,7 @@ import org.testng.asserts.SoftAssert;
 
 public class NotebooksFilterFunctionality_Test extends BaseTest {
 
-    @Test(dataProvider = "filterData")
+    @Test(dataProvider = "filterData", groups = {"page_filter"})
     public void checkFilterFunctionality(int priceFrom, int priceTo, String currency, String location) {
         Notebooks notebook = (Notebooks) new Notebooks(getDriver()).get();
         notebook.chooseLanguageInTopRight(Language.ENGLISH);
