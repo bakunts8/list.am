@@ -9,11 +9,6 @@
     </test>
 
     <test name="Check pages filter functionality">
-        <groups>
-            <run>
-                <include name="page_filter"/>
-            </run>
-        </groups>
         <classes>
             <class name="ApartmentsFilterFunctionality_Test"/>
             <class name="NotebooksFilterFunctionality_Test"/>
