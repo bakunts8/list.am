@@ -4,14 +4,14 @@
 
     <test name="Check last item clickable functionality">
         <classes>
-            <class name="LastItemFunctionality_Test"/>
+            <class name="list_am.LastItemFunctionality_Test"/>
         </classes>
     </test>
 
     <test name="Check pages filter functionality">
         <classes>
-            <class name="ApartmentsFilterFunctionality_Test"/>
-            <class name="NotebooksFilterFunctionality_Test"/>
+            <class name="list_am.ApartmentsFilterFunctionality_Test"/>
+            <class name="list_am.NotebooksFilterFunctionality_Test"/>
         </classes>
     </test>
 

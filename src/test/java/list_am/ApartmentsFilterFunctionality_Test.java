@@ -1,3 +1,5 @@
+package list_am;
+
 import Helpers.Language;
 import ListPages.Apartments;
 import org.testng.annotations.Test;
