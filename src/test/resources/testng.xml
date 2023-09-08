@@ -9,27 +9,40 @@
     </test>
 
     <test name="Check pages filter functionality">
+
+        <groups>
+            <run>
+                <include name="page_filter"/>
+            </run>
+        </groups>
         <classes>
             <class name="list_am.ApartmentsFilterFunctionality_Test"/>
             <class name="list_am.NotebooksFilterFunctionality_Test"/>
         </classes>
     </test>
 
-    <test name="Rest assured API">
-        <groups>
-            <run>
-                <include name="get_body"/>
-                <include name="get_status"/>
-                <include name="get_headers"/>
-                <include name="get_time"/>
-                <include name="get_content type"/>
-                <include name="get_all"/>
-            </run>
-        </groups>
+        <test name="Rest assured API">
+            <groups>
+                <run>
+                    <include name="get_body"/>
+                    <include name="get_status"/>
+                    <include name="get_headers"/>
+                    <include name="get_time"/>
+                    <include name="get_content type"/>
+                    <include name="get_all"/>
+                </run>
+            </groups>
+            <classes>
+                <class name="rest_assured_api.GetApiExamples"/>
+                <class name="rest_assured_api.RestAssuredApiExamples"/>
+                <class name="rest_assured_api.RestTest"/>
+            </classes>
+        </test>
+
+    <test name="Rest assured API2">
         <classes>
-            <class name="rest_assured_api.GetApiExamples"/>
-            <class name="rest_assured_api.RestAssuredApiExamples"/>
-            <class name="rest_assured_api.RestTest"/>
+            <class name="API.ApiDataCheckingTest"/>
+            <class name="API.JsonSchemaValidation_Test"/>
         </classes>
     </test>
 
