@@ -3,7 +3,6 @@ package API;
 import ApiPages.Pojo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.Test;
 
@@ -38,6 +37,5 @@ public class ApiDataCheckingTest {
 
         RequestSpecification request = given();
         request.baseUri("https://reqres.in");
-        Response response = request.get("/api/users/2");
     }
 }
