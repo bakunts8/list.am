@@ -21,7 +21,7 @@
         </classes>
     </test>
 
-        <test name="Rest assured API">
+        <test name="Rest assured API_gorest">
             <groups>
                 <run>
                     <include name="get_body"/>
@@ -35,14 +35,12 @@
             <classes>
                 <class name="rest_assured_api.GetApiExamples"/>
                 <class name="rest_assured_api.RestAssuredApiExamples"/>
-                <class name="rest_assured_api.RestTest"/>
             </classes>
         </test>
 
     <test name="Rest assured API2">
         <classes>
-            <class name="API.ApiDataCheckingTest"/>
-            <class name="API.JsonSchemaValidation_Test"/>
+            <class name="API_gorest.GoRestUser_Test"/>
         </classes>
     </test>
 

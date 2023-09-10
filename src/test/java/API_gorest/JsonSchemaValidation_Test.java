@@ -1,4 +1,4 @@
-package API;
+package API_gorest;
 
 import ApiPages.Reqres;
 import com.github.fge.jsonschema.cfg.ValidationConfiguration;
