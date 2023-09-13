@@ -18,29 +18,7 @@
         <classes>
             <class name="list_am.ApartmentsFilterFunctionality_Test"/>
             <class name="list_am.NotebooksFilterFunctionality_Test"/>
-        </classes>
-    </test>
-
-        <test name="Rest assured API_gorest">
-            <groups>
-                <run>
-                    <include name="get_body"/>
-                    <include name="get_status"/>
-                    <include name="get_headers"/>
-                    <include name="get_time"/>
-                    <include name="get_content type"/>
-                    <include name="get_all"/>
-                </run>
-            </groups>
-            <classes>
-                <class name="rest_assured_api.GetApiExamples"/>
-                <class name="rest_assured_api.RestAssuredApiExamples"/>
-            </classes>
-        </test>
-
-    <test name="Rest assured API2">
-        <classes>
-            <class name="API_gorest.GoRestUser_Test"/>
+            <class name="list_am.LastItemFunctionality_Test"/>
         </classes>
     </test>
 
