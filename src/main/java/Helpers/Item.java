@@ -19,11 +19,11 @@ public class Item {
     @FindBy(xpath = "//div[@id = 'contentr']//a//div[@class = 'clabel']")
     private WebElement agencyLabel;
 
-    @FindBy(xpath = "//div[@id='star']/preceding::a[1]")
-    private WebElement lastItem;
-
     @FindBy(xpath = "//div[@id = 'contentr']//a/div[contains(@class, 'p')]")
     private WebElement price;
+
+    @FindBy(xpath = "//div[@id='star']/preceding::a[1]")
+    private WebElement lastItem;
 
     public Item(WebDriver driver) {
         PageFactory.initElements(driver, this);

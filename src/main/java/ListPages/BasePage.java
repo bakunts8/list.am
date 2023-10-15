@@ -63,8 +63,6 @@ public class BasePage extends LoadableComponent<BasePage> {
         return driver;
     }
 
-
-
     public Waits getWait() {
         wait = new Waits(driver);
         return wait;
